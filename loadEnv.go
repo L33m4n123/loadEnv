@@ -2,7 +2,6 @@ package loadEnv
 
 import (
 	"bufio"
-	"errors"
 	"fmt"
 	"os"
 	"strings"
@@ -17,29 +16,13 @@ func (m *EnvError) Error() string {
 	return fmt.Sprintf("Unable to load %s File with error %s", m.filename, m.message)
 }
 
-func Load(fileNames ...string) (err error) {
-	var fileName string
-
-	if len(fileNames) == 0 {
-		fileName = getDefaultFile()
-	} else {
-		fileName = fileNames[0]
-	}
-
+func Load(fileName string) (err error) {
 	err = loadFile(fileName)
 	if err != nil {
 		return err
 	}
 
 	return nil
-}
-
-func getDefaultFile() string {
-	if _, err := os.Stat(".env.local"); errors.Is(err, os.ErrNotExist) {
-		return ".env"
-	}
-
-	return ".env.local"
 }
 
 func loadFile(fileName string) error {

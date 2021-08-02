@@ -2,16 +2,27 @@ package tests
 
 import (
 	"github.com/l33m4n123/loadEnv"
-	"os"
 	"testing"
+	"os"
 )
 
-func TestLoad(t *testing.T) {
-	err := loadEnv.Load(".env")
+func TestLoadSkipFileNotExist(t *testing.T) {
+	err := loadEnv.Load(".eanv", true)
 	if err != nil {
-		panic(err)
+		t.Fail()
 	}
-	if os.Getenv("APP_ENV") != "dev" {
+}
+
+func TestLoadFailNonExistingFile(t *testing.T) {
+	err := loadEnv.Load(".eanv", false)
+	if err == nil {
+		t.Fail()
+	}
+}
+
+func TestLoadExistingFile(t *testing.T) {
+	loadEnv.Load(".env", false)
+	if os.Getenv("APP_ENV") != "test" {
 		t.Fail()
 	}
 }

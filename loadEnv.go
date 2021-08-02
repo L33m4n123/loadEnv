@@ -16,8 +16,8 @@ func (m *EnvError) Error() string {
 	return fmt.Sprintf("Unable to load %s File with error %s", m.filename, m.message)
 }
 
-func Load(fileName string) (err error) {
-	err = loadFile(fileName)
+func Load(fileName string, skipIfFileNotExists bool) (err error) {
+	err = loadFile(fileName, skipIfFileNotExists)
 	if err != nil {
 		return err
 	}
@@ -25,9 +25,12 @@ func Load(fileName string) (err error) {
 	return nil
 }
 
-func loadFile(fileName string) error {
+func loadFile(fileName string, skipIfFileNotExists bool) error {
 	envFile, err := os.Open(fileName)
 	if err != nil {
+		if skipIfFileNotExists {
+			return nil
+		}
 		return &EnvError{fileName, err.Error()}
 	}
 
